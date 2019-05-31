@@ -1,0 +1,9 @@
+allow-uncaught: false
+bail: false
+ui: bdd
+timeout: 2000
+recursive: true
+exclude:
+  - ./**/*.map
+exit: true
+require: 'source-map-support/register'
