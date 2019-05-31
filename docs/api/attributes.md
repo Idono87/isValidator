@@ -1,0 +1,18 @@
+<h1>API Documentation - Attributes</h1>
+
+* [Attributes](attributes/attributes)
+* [ArrayAttributes](attributes/array)
+* [BooleanAttributes](attributes/boolean)
+* [DateAttributes](attributes/date)
+* [ErrorAttributes](attributes/error)
+* [FunctionAttributes](attributes/function)
+* [NestedObjectAttributes](attributes/nestedobject)
+* [NullAttributes](attributes/null)
+* [NumberAttributes](attributes/number)
+* [ObjectAttributes](attributes/object)
+* [PromiseAttributes](attributes/promise)
+* [RegExpAttributes](attributes/regexp)
+* [StringAttributes](attributes/string)
+* [SymbolAttributes](attributes/symbol)
+* [TypeAttributes](attributes/type)
+* [UndefinedAttributes](attributes/undefined)

@@ -1,0 +1,118 @@
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.0.4
+
+executors:
+  node-10:
+    docker:
+      - image: node:10.15.3-jessie
+    working_directory: ~/isValidator
+
+
+
+
+commands: 
+  build: #Build the project.
+    parameters:
+      script:
+        type: string
+    description: "Building the library"
+    steps:
+      - run: npm run-script build:<< parameters.script >>
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - isValidator/
+  
+
+  run-test:
+    parameters:
+      test-type:
+        default: "unit"
+        description: "Test types."
+        type: enum
+        enum: ["unit", "integration"]
+    description: "Run a test on chosen test type."
+    steps:
+        - run: node ./node_modules/nyc/bin/nyc.js --reporter lcovonly ./node_modules/.bin/mocha-parallel-tests --reporter progress ./build/tests/<< parameters.test-type >>/
+        - codecov/upload:
+            file: coverage/lcov.info
+            token: $CODECOV_TOKEN
+            flags: << parameters.test-type >>
+
+
+
+  install:
+    parameters: 
+      cache-name:
+        type: string
+        default: dev
+    description: "Installs all packages"
+    steps:
+      - restore_cache:
+          name: "Restoring dependency cache."
+          key: << parameters.cache-name >>-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run: 
+          name: 'Installing dependencies.'
+          command: npm install
+      - save_cache:
+          name: "Saving dependency cache."
+          paths:
+            - ./node_modules
+          key: << parameters.cache-name >>-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
+jobs:
+  init:
+    parameters:
+      deployment-env:
+        type: string
+        default: dev
+    executor: node-10
+    steps:
+      - checkout
+      - install:
+          cache-name: << parameters.deployment-env >>
+      - build:
+          script: << parameters.deployment-env >>
+          
+         
+  test:
+    executor: node-10
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run-test:
+          test-type: "unit"
+      - run-test:
+          test-type: "integration"
+     
+     
+     
+workflows:
+  version: 2.1
+  build-and-test:
+    jobs:
+
+      - init:
+          name: prod-init
+          deployment-env: prod
+          
+          
+          requires:
+            - dev-init
+            - test
+          filters:
+            branches:
+              only: production
+
+
+      - init:
+          name: dev-init
+          deployment-env: dev
+
+
+      - test:
+          context: isValidator
+          requires:
+            - dev-init
