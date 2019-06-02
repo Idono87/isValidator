@@ -2,21 +2,21 @@ import { expect } from 'chai';
 import * as ArrayBufferAttributes from '../../attributes/arrayBufferAttributes';
 import { ValidationResponse } from '../../validators';
 
-describe('ArrayAttributes', function() {
+const createBufferFromInput = (str: string) => {
+    const buffer: ArrayBuffer = new ArrayBuffer(str.length * 2);
+    const bufferView: Uint16Array = new Uint16Array(buffer);
+
+    str.split('').forEach((char, index) => {
+        bufferView[index] = char.charCodeAt(0);
+    });
+
+    return buffer;
+};
+
+describe('ArrayBufferAttributes', function() {
     describe('isEqualTo', function() {
         const input = 'abcdefgh';
         const byteSize: number = input.length * 2;
-
-        const createBufferFromInput = (str: string) => {
-            const buffer: ArrayBuffer = new ArrayBuffer(str.length * 2);
-            const bufferView: Uint16Array = new Uint16Array(buffer);
-
-            str.split('').forEach((char, index) => {
-                bufferView[index] = char.charCodeAt(0);
-            });
-
-            return buffer;
-        };
 
         it('Expect isEqualTo to pass', function() {
             const buffer: ArrayBuffer = createBufferFromInput(input);
@@ -53,17 +53,6 @@ describe('ArrayAttributes', function() {
         const input = 'abcdefgh';
         const byteSize: number = input.length * 2;
 
-        const createBufferFromInput = (str: string) => {
-            const buffer: ArrayBuffer = new ArrayBuffer(str.length * 2);
-            const bufferView: Uint16Array = new Uint16Array(buffer);
-
-            str.split('').forEach((char, index) => {
-                bufferView[index] = char.charCodeAt(0);
-            });
-
-            return buffer;
-        };
-
         it('Expect isNotEqualTo to pass when the buffer sizes differ.', function() {
             const buffer: ArrayBuffer = createBufferFromInput(input);
             const compareBuffer: ArrayBuffer = createBufferFromInput(
@@ -88,11 +77,28 @@ describe('ArrayAttributes', function() {
             const buffer: ArrayBuffer = createBufferFromInput(input);
             const compareBuffer: ArrayBuffer = createBufferFromInput(input);
 
-            console.log(
-                ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer),
-            );
             expect(
                 ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer),
+            ).to.be.a('string');
+        });
+    });
+
+    describe('isByteLengthOf', function() {
+        const input: string = 'abcdefgh';
+        const buffer: ArrayBuffer = createBufferFromInput(input);
+
+        it('Expect to pass', function() {
+            expect(
+                ArrayBufferAttributes.isByteLengthOf(buffer, buffer.byteLength),
+            ).to.be.undefined;
+        });
+
+        it('Expect to fail', function() {
+            expect(
+                ArrayBufferAttributes.isByteLengthOf(
+                    buffer,
+                    buffer.byteLength + 1,
+                ),
             ).to.be.a('string');
         });
     });

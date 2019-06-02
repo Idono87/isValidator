@@ -3,6 +3,7 @@
 - [Interfaces](#interfaces)
   - [IArrayBufferAttributes](#iarraybufferattributes)
 - [Functions](#functions)
+  - [isByteLengthOf](#isbytelengthof)
   - [isEqualTo](#isequalto)
   - [isNotEqualTo](#isnotequalto)
 
@@ -11,12 +12,17 @@
 
 ## IArrayBufferAttributes
 
+* __```isByteLengthOf?:number```__
 * __```isEqualTo?:ArrayBuffer```__
 * __```isNotEqualTo?:ArrayBuffer```__
 
 Interface typings for all the available array buffer attributes.
 
 # Functions
+
+## isByteLengthOf
+
+Validates that the ArrayBuffer is of length n.
 
 ## isEqualTo
 

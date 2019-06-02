@@ -22,6 +22,7 @@ describe('ArrayBuffer integration test', function() {
     const passingConstraints: IConstraints = {
         arrayBuffer: {
             isArrayBuffer: {
+                isByteLengthOf: input.arrayBuffer.byteLength,
                 isEqualTo: createBufferFromInput(bufferstring),
                 isNotEqualTo: createBufferFromInput(
                     bufferstring.slice(0, bufferstring.length - 1) + 'a',
@@ -33,6 +34,7 @@ describe('ArrayBuffer integration test', function() {
     const failingConstraints: IConstraints = {
         arrayBuffer: {
             isArrayBuffer: {
+                isByteLengthOf: input.arrayBuffer.byteLength + 1,
                 isEqualTo: createBufferFromInput(
                     bufferstring.slice(0, bufferstring.length - 1) + 'a',
                 ),
@@ -54,6 +56,10 @@ describe('ArrayBuffer integration test', function() {
 
         expect(toTest, 'Expect the isNotEqualTo attribute validator to fail')
             .to.have.nested.property('arrayBuffer.isArrayBuffer.isNotEqualTo')
+            .and.be.a('string');
+
+        expect(toTest, 'Expect the isByteLengthOf attribute validator to fail')
+            .to.have.nested.property('arrayBuffer.isArrayBuffer.isByteLengthOf')
             .and.be.a('string');
     });
 });

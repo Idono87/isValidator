@@ -21,9 +21,28 @@ import { AttributeValidator, IAttributes } from './attributes';
  * Interface typings for all the available array buffer attributes. See specific attribute validator for more information.
  */
 export interface IArrayBufferAttributes extends IAttributes {
+    isByteLengthOf?: number;
     isEqualTo?: ArrayBuffer;
     isNotEqualTo?: ArrayBuffer;
 }
+
+/**
+ * Validates that the ArrayBuffer is of length n.
+ *
+ * @param value ArrayBuffer to vlidate
+ * @param validationValue byte length
+ * @returns string if validation fails | undefined
+ */
+export const isByteLengthOf: AttributeValidator = (
+    value: ArrayBuffer,
+    validationValue: number,
+): ValidationResponse => {
+    const byteLength: number = value.byteLength;
+
+    if (byteLength !== validationValue) {
+        return `ArrayBuffer byte length is '${byteLength}'. Expecting size '${validationValue}'`;
+    }
+};
 
 /**
  * Compares equality between the validated ArrayBuffer and the given ArrayBuffer attribute argument.

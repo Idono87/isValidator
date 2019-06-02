@@ -162,12 +162,18 @@ RegisterDefaultAttribute(
     ArrayBufferAttributes.isEqualTo,
     true,
 );
-
 RegisterDefaultAttribute(
     'isNotEqualTo',
     'isArrayBuffer',
     Validators.isArrayBuffer,
     ArrayBufferAttributes.isNotEqualTo,
+    true,
+);
+RegisterDefaultAttribute(
+    'isByteLengthOf',
+    'isArrayBuffer',
+    Validators.isNumber,
+    ArrayBufferAttributes.isByteLengthOf,
     true,
 );
 
