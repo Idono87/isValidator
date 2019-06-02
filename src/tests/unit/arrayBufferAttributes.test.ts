@@ -48,4 +48,52 @@ describe('ArrayAttributes', function() {
             ).to.be.a('string');
         });
     });
+
+    describe('isNotEqualTo', function() {
+        const input = 'abcdefgh';
+        const byteSize: number = input.length * 2;
+
+        const createBufferFromInput = (str: string) => {
+            const buffer: ArrayBuffer = new ArrayBuffer(str.length * 2);
+            const bufferView: Uint16Array = new Uint16Array(buffer);
+
+            str.split('').forEach((char, index) => {
+                bufferView[index] = char.charCodeAt(0);
+            });
+
+            return buffer;
+        };
+
+        it('Expect isNotEqualTo to pass when the buffer sizes differ.', function() {
+            const buffer: ArrayBuffer = createBufferFromInput(input);
+            const compareBuffer: ArrayBuffer = createBufferFromInput(
+                input + 'ijk',
+            );
+
+            expect(ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer)).to
+                .be.undefined;
+        });
+
+        it('Expect isNotEqualTo to pass when the buffer sizes are equal', function() {
+            const buffer: ArrayBuffer = createBufferFromInput(input);
+            const compareBuffer: ArrayBuffer = createBufferFromInput(
+                input.slice(0, input.length - 1) + 'a',
+            );
+
+            expect(ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer)).to
+                .be.undefined;
+        });
+
+        it('Expect isNotEqualTo to fail when both buffers are equal.', function() {
+            const buffer: ArrayBuffer = createBufferFromInput(input);
+            const compareBuffer: ArrayBuffer = createBufferFromInput(input);
+
+            console.log(
+                ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer),
+            );
+            expect(
+                ArrayBufferAttributes.isNotEqualTo(buffer, compareBuffer),
+            ).to.be.a('string');
+        });
+    });
 });

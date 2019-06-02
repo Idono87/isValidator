@@ -23,6 +23,9 @@ describe('ArrayBuffer integration test', function() {
         arrayBuffer: {
             isArrayBuffer: {
                 isEqualTo: createBufferFromInput(bufferstring),
+                isNotEqualTo: createBufferFromInput(
+                    bufferstring.slice(0, bufferstring.length - 1) + 'a',
+                ),
             },
         },
     };
@@ -33,6 +36,7 @@ describe('ArrayBuffer integration test', function() {
                 isEqualTo: createBufferFromInput(
                     bufferstring.slice(0, bufferstring.length - 1) + 'a',
                 ),
+                isNotEqualTo: createBufferFromInput(bufferstring),
             },
         },
     };
@@ -46,6 +50,10 @@ describe('ArrayBuffer integration test', function() {
 
         expect(toTest, 'Expect the isEqualTo attribute validator to fail')
             .to.have.nested.property('arrayBuffer.isArrayBuffer.isEqualTo')
+            .and.be.a('string');
+
+        expect(toTest, 'Expect the isNotEqualTo attribute validator to fail')
+            .to.have.nested.property('arrayBuffer.isArrayBuffer.isNotEqualTo')
             .and.be.a('string');
     });
 });

@@ -163,6 +163,14 @@ RegisterDefaultAttribute(
     true,
 );
 
+RegisterDefaultAttribute(
+    'isNotEqualTo',
+    'isArrayBuffer',
+    Validators.isArrayBuffer,
+    ArrayBufferAttributes.isNotEqualTo,
+    true,
+);
+
 // Register DateAttributes
 RegisterDefaultAttribute(
     'isEqualTo',

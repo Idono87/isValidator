@@ -22,6 +22,7 @@ import { AttributeValidator, IAttributes } from './attributes';
  */
 export interface IArrayBufferAttributes extends IAttributes {
     isEqualTo?: ArrayBuffer;
+    isNotEqualTo?: ArrayBuffer;
 }
 
 /**
@@ -35,7 +36,7 @@ export const isEqualTo: AttributeValidator = (
     value: ArrayBuffer,
     validationValue: ArrayBuffer,
 ): ValidationResponse => {
-    const errMessage: string = 'Buffers are not equal.';
+    const errMessage: string = 'Buffers are not equal to each other.';
     if (value.byteLength !== validationValue.byteLength) {
         return errMessage;
     }
@@ -48,5 +49,21 @@ export const isEqualTo: AttributeValidator = (
         if (bufferView[i] !== compareBufferView[i]) {
             return errMessage;
         }
+    }
+};
+
+/**
+ * Validates inequality between the validated ArrayBuffer and the given ArrayBuffer attribute argument.
+ *
+ * @param value ArrayBuffer to compare
+ * @param validationValue ArrayBuffer to compare to.
+ * @returns string if validation fails | undefined
+ */
+export const isNotEqualTo: AttributeValidator = (
+    value: ArrayBuffer,
+    validationValue: ArrayBuffer,
+): ValidationResponse => {
+    if (!isEqualTo(value, validationValue)) {
+        return 'Buffers are equal to each other.';
     }
 };
