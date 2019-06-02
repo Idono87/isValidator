@@ -19,22 +19,8 @@
  */
 
 import { ErrorHandler } from '../errorHandler';
-import { Func } from '../utils';
-import {
-    isArray,
-    isBoolean,
-    isDataType,
-    isFunction,
-    isNull,
-    isNumber,
-    isObject,
-    isString,
-    isSymbol,
-    isType,
-    isUndefined,
-    ValidationResponse,
-    Validator,
-} from '../validators';
+import { Func, getTypeValidator } from '../utils';
+import { isArray, isDataType, isType, ValidationResponse } from '../validators';
 import { AttributeValidator, IAttributes } from './attributes';
 
 /**
@@ -412,45 +398,6 @@ export const isStrictEqualTo: AttributeValidator = (
 
 /**
  *
- * Calls the correct validator for all primitive types.
- *
- * @param value
- * @param type
- */
-const isPrimitiveType = (value: any, type: string): ValidationResponse => {
-    let validator: Validator;
-    switch (type) {
-        case 'string':
-            validator = isString;
-            break;
-        case 'boolean':
-            validator = isBoolean;
-            break;
-        case 'number':
-            validator = isNumber;
-            break;
-        case 'null':
-            validator = isNull;
-            break;
-        case 'undefined':
-            validator = isUndefined;
-            break;
-        case 'symbol':
-            validator = isSymbol;
-            break;
-        case 'object':
-            validator = isObject;
-            break;
-        case 'function':
-            validator = isFunction;
-            break;
-    }
-
-    return validator!(value);
-};
-
-/**
- *
  * Returns if the types match
  *
  * @param value
@@ -459,7 +406,7 @@ const isPrimitiveType = (value: any, type: string): ValidationResponse => {
 const compareTypes = (value: any, type: string | Func): ValidationResponse => {
     return typeof type !== 'string'
         ? isType(value, undefined, { type })
-        : isPrimitiveType(value, type);
+        : getTypeValidator(value, type);
 };
 
 /**
