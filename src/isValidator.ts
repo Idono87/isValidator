@@ -68,21 +68,22 @@ export interface IPropertyConstraints {
     exclude?: boolean;
     expect?: boolean;
     reject?: boolean;
-    isArrayBuffer?: IArrayBufferAttributes;
-    isString?: IStringAttributes;
-    isNumber?: INumberAttributes;
+
     isArray?: IArrayAttributes;
-    isFunction?: IFunctionAttributes;
-    isObject?: IObjectAttributes;
-    isNull?: INullAttributes;
-    isUndefined?: IUndefinedAttributes;
+    isArrayBuffer?: IArrayBufferAttributes;
     isBoolean?: IBooleanAttributes;
-    isRegExp?: IRegexpAttributes;
-    isError?: IErrorAttributes;
     isDate?: IDateAttributes;
-    isSymbol?: ISymbolAttributes;
+    isError?: IErrorAttributes;
+    isFunction?: IFunctionAttributes;
+    isNull?: INullAttributes;
+    isNumber?: INumberAttributes;
+    isObject?: IObjectAttributes;
     isPromise?: IPromiseAttributes;
+    isRegExp?: IRegexpAttributes;
+    isString?: IStringAttributes;
+    isSymbol?: ISymbolAttributes;
     isType?: ITypeAttributes;
+    isUndefined?: IUndefinedAttributes;
     validateNestedObject?: INestedObjectAttributes;
 }
 
