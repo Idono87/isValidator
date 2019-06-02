@@ -2,6 +2,7 @@
 
 * [Attributes](attributes/attributes)
 * [ArrayAttributes](attributes/array)
+* [ArrayBufferAttributes](attributes/arraybuffer)
 * [BooleanAttributes](attributes/boolean)
 * [DateAttributes](attributes/date)
 * [ErrorAttributes](attributes/error)

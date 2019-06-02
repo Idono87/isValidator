@@ -1,6 +1,6 @@
 {
     "name": "isvalidator",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "The extensible validation package.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -8,7 +8,7 @@
         "pretest": "npm run-script build:dev",
         "test": "tslint --project ./ && npm run-script test:unit && npm run-script test:integration && npm run-script test:coverage",
         "test:lint": "tslint --project ./",
-        "test:integration": "nyc --no-clean --reporter none mocha-parallel-tests --reporter progress \"./build/tests/integration/*.test.js\"",
+        "test:integration": "nyc --no-clean --reporter none mocha-parallel-tests \"./build/tests/integration/*.test.js\"",
         "test:unit": "nyc --no-clean --reporter none mocha-parallel-tests \"./build/tests/unit/*.test.js\"",
         "test:coverage": "nyc --reporter text --reporter html report",
         "prebuild:dev": "rimraf .nyc_output build coverage",

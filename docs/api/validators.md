@@ -5,6 +5,7 @@
   - [Validator](#validator)
 - [Functions](#functions)
   - [isArray](#isarray)
+  - [isArrayBuffer](#isarraybuffer)
   - [isBoolean](#isboolean)
   - [isDate](#isdate)
   - [isError](#iserror)
@@ -70,6 +71,9 @@ Validator function signature. All validators must implement this function signat
 
 Validates that the passed in value is an Array. 
 
+## isArrayBuffer
+
+Validates if the given value is an array buffer
 
 ## isBoolean
 

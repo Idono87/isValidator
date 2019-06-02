@@ -18,6 +18,7 @@
  * Built in default validators. All validators return a string when validation fails otherwise undefined.
  */
 
+import { IArrayBufferAttributes } from './attributes/arrayBufferAttributes';
 import { IAttributes } from './attributes/attributes';
 import { INestedObjectAttributes } from './attributes/nestedObjectAttributes';
 import { ITypeAttributes } from './attributes/typeAttributes';
@@ -375,4 +376,27 @@ export const validateNestedObject: Validator = (
     }
 
     return Validate(value, attributes!.constraints!, options);
+};
+
+/**
+ * Validates if the given value is an array buffer
+ *
+ * @param value - The value to validate.
+ * @param key
+ * @param attributes
+ * @param options
+ */
+export const isArrayBuffer: Validator = (
+    value: any,
+    key?: string,
+    attributes?: IArrayBufferAttributes,
+    options?: IConstraintOptions,
+): ValidationResponse => {
+    const isTypeAttributes = {
+        type: ArrayBuffer,
+    };
+
+    if (isType(value, key, isTypeAttributes, options)) {
+        return 'Value is not an ArrayBuffer.';
+    }
 };

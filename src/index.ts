@@ -21,6 +21,7 @@ import {
 import * as Validators from './validators';
 
 import * as ArrayAttributes from './attributes/arrayAttributes';
+import * as ArrayBufferAttributes from './attributes/arrayBufferAttributes';
 import * as BooleanAttributes from './attributes/booleanAttributes';
 import * as DateAttributes from './attributes/dateAttributes';
 import * as ErrorAttributes from './attributes/errorAttributes';
@@ -43,6 +44,7 @@ RegisterDefaultValidator('reject', undefined, true);
 RegisterDefaultValidator('isString', Validators.isString, true);
 RegisterDefaultValidator('isNumber', Validators.isNumber, true);
 RegisterDefaultValidator('isArray', Validators.isArray, true);
+RegisterDefaultValidator('isArrayBuffer', Validators.isArrayBuffer, true);
 RegisterDefaultValidator('isFunction', Validators.isFunction, true);
 RegisterDefaultValidator('isObject', Validators.isObject, true);
 RegisterDefaultValidator('isNull', Validators.isNull, true);
@@ -149,6 +151,29 @@ RegisterDefaultAttribute(
     'isArray',
     Validators.isArray,
     ArrayAttributes.isStrictEqualTo,
+    true,
+);
+
+// Register ArrayBufferAttributes
+RegisterDefaultAttribute(
+    'isEqualTo',
+    'isArrayBuffer',
+    Validators.isArrayBuffer,
+    ArrayBufferAttributes.isEqualTo,
+    true,
+);
+RegisterDefaultAttribute(
+    'isNotEqualTo',
+    'isArrayBuffer',
+    Validators.isArrayBuffer,
+    ArrayBufferAttributes.isNotEqualTo,
+    true,
+);
+RegisterDefaultAttribute(
+    'isByteLengthOf',
+    'isArrayBuffer',
+    Validators.isNumber,
+    ArrayBufferAttributes.isByteLengthOf,
     true,
 );
 
@@ -383,6 +408,7 @@ export {
 
 export { IAttributes, AttributeValidator } from './attributes/attributes';
 export { IArrayAttributes } from './attributes/arrayAttributes';
+export { IArrayBufferAttributes } from './attributes/arrayBufferAttributes';
 export { IBooleanAttributes } from './attributes/booleanAttributes';
 export { IDateAttributes } from './attributes/dateAttributes';
 export { IErrorAttributes } from './attributes/errorAttributes';

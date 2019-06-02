@@ -277,5 +277,20 @@ describe('Validator Tests', function() {
         });
     });
 
+    describe('isArrayBuffer', function() {
+        it('Expect to pass with an arraybuffer value', function() {
+            const arrayBuffer = new ArrayBuffer(20);
+            expect(Validators.isArrayBuffer(arrayBuffer)).to.be.undefined;
+        });
+
+        it('Expect to fail with a non arraybuffer value', function() {
+            const notAnArrayBuffer = new Array(20);
+
+            expect(Validators.isArrayBuffer(notAnArrayBuffer)).to.be.a(
+                'string',
+            );
+        });
+    });
+
     // NestedObject Validator is done in a separate test file
 });

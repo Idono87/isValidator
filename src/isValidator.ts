@@ -30,6 +30,7 @@ type Validator = Validators.Validator;
 type ValidationResponse = Validators.ValidationResponse;
 
 import { IArrayAttributes } from './attributes/arrayAttributes';
+import { IArrayBufferAttributes } from './attributes/arrayBufferAttributes';
 import { IBooleanAttributes } from './attributes/booleanAttributes';
 import { IDateAttributes } from './attributes/dateAttributes';
 import { IErrorAttributes } from './attributes/errorAttributes';
@@ -67,6 +68,7 @@ export interface IPropertyConstraints {
     exclude?: boolean;
     expect?: boolean;
     reject?: boolean;
+    isArrayBuffer?: IArrayBufferAttributes;
     isString?: IStringAttributes;
     isNumber?: INumberAttributes;
     isArray?: IArrayAttributes;
