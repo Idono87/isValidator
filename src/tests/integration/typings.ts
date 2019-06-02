@@ -19,7 +19,9 @@ const constraints: IConstraints = {
             isStrictEqualTo: [1, 2, 3],
             isStrictOfTypes: ['string', Date],
         },
-        isArrayBuffer: {},
+        isArrayBuffer: {
+            isEqualTo: new ArrayBuffer(16),
+        },
         isBoolean: {},
         isDate: {
             isEqualTo: new Date(),

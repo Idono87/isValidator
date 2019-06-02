@@ -14,9 +14,39 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+import { ValidationResponse } from '../validators';
 import { AttributeValidator, IAttributes } from './attributes';
 
 /**
  * Interface typings for all the available array buffer attributes. See specific attribute validator for more information.
  */
-export interface IArrayBufferAttributes extends IAttributes {}
+export interface IArrayBufferAttributes extends IAttributes {
+    isEqualTo?: ArrayBuffer;
+}
+
+/**
+ * Compares equality between the validated ArrayBuffer and the given ArrayBuffer attribute argument.
+ *
+ * @param value ArrayBuffer to compare
+ * @param validationValue ArrayBuffer to compare to.
+ * @returns string if validation fails | undefined
+ */
+export const isEqualTo: AttributeValidator = (
+    value: ArrayBuffer,
+    validationValue: ArrayBuffer,
+): ValidationResponse => {
+    const errMessage: string = 'Buffers are not equal.';
+    if (value.byteLength !== validationValue.byteLength) {
+        return errMessage;
+    }
+
+    const byteLength: number = value.byteLength;
+    const bufferView: Uint8Array = new Uint8Array(value);
+    const compareBufferView: Uint8Array = new Uint8Array(validationValue);
+
+    for (let i = 0; i < byteLength; i++) {
+        if (bufferView[i] !== compareBufferView[i]) {
+            return errMessage;
+        }
+    }
+};

@@ -154,6 +154,15 @@ RegisterDefaultAttribute(
     true,
 );
 
+// Register ArrayBufferAttributes
+RegisterDefaultAttribute(
+    'isEqualTo',
+    'isArrayBuffer',
+    Validators.isArrayBuffer,
+    ArrayBufferAttributes.isEqualTo,
+    true,
+);
+
 // Register DateAttributes
 RegisterDefaultAttribute(
     'isEqualTo',

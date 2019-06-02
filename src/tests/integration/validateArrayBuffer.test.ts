@@ -1,18 +1,51 @@
 import { expect } from 'chai';
-import { IConstraints, Validate, ErrorReport } from '../..';
+import { IConstraints, Validate } from '../..';
 
-describe('Array integration test', function() {
+const createBufferFromInput = (str: string) => {
+    const buffer: ArrayBuffer = new ArrayBuffer(str.length * 2);
+    const bufferView: Uint16Array = new Uint16Array(buffer);
+
+    str.split('').forEach((char, index) => {
+        bufferView[index] = char.charCodeAt(0);
+    });
+
+    return buffer;
+};
+
+describe('ArrayBuffer integration test', function() {
+    const bufferstring: string = 'abcdefgh';
+
     const input = {
-        arrayBuffer: new ArrayBuffer(20),
+        arrayBuffer: createBufferFromInput(bufferstring),
     };
 
     const passingConstraints: IConstraints = {
         arrayBuffer: {
-            isArrayBuffer: {},
+            isArrayBuffer: {
+                isEqualTo: createBufferFromInput(bufferstring),
+            },
+        },
+    };
+
+    const failingConstraints: IConstraints = {
+        arrayBuffer: {
+            isArrayBuffer: {
+                isEqualTo: createBufferFromInput(
+                    bufferstring.slice(0, bufferstring.length - 1) + 'a',
+                ),
+            },
         },
     };
 
     it('Expect to pass', function() {
         expect(Validate(input, passingConstraints)).to.be.undefined;
+    });
+
+    it('Expect to fail', function() {
+        const toTest = Validate(input, failingConstraints);
+
+        expect(toTest, 'Expect the isEqualTo attribute validator to fail')
+            .to.have.nested.property('arrayBuffer.isArrayBuffer.isEqualTo')
+            .and.be.a('string');
     });
 });
