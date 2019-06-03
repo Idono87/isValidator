@@ -85,6 +85,8 @@ export interface IPropertyConstraints {
     isType?: ITypeAttributes;
     isUndefined?: IUndefinedAttributes;
     validateNestedObject?: INestedObjectAttributes;
+
+    readonly [name: string]: IAttributes | boolean | undefined;
 }
 
 /**
