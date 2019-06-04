@@ -150,7 +150,7 @@ Retrieves the given validator.
 * ```typescript
     (attributeName:string, validatorName:string) => AttributeValidationFunction | undefined
   ```
-Retrieves a wrapped attribute validator associated with the given validator.
+Retrieves a wrapped attribute validator associated with the given validator. The wrapped attribute validator automatically type checks the ```validationValue``` to match the retrieved attribute argument type. Throws a TypeError if the argument validation fails.
 
 
 ## GetWrappedValidator
