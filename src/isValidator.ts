@@ -162,41 +162,71 @@ export const GetWrappedValidator = (
     }
 };
 
+/**
+ * Checks if the attribute exists.
+ * @param attributeName
+ * @param validatorName
+ */
+export const HasAttribute = (
+    attributeName: string,
+    validatorName: string,
+): boolean => {
+    return (
+        validatorName in RegisteredValidators &&
+        attributeName in RegisteredValidators[validatorName].attributes
+    );
+};
+
+/**
+ * Gets the attribute object.
+ * @param attributeName
+ * @param validatorName
+ */
+const GetAttribute = (
+    attributeName: string,
+    validatorName: string,
+): IAttributeObject | undefined => {
+    if (HasAttribute(attributeName, validatorName)) {
+        return RegisteredValidators[validatorName].attributes[attributeName];
+    }
+};
+
+/**
+ * Gets the attribute argument validator.
+ *
+ * @param attributeName
+ * @param validatorName
+ */
+export const GetAttributeArgumentValidator = (
+    attributeName: string,
+    validatorName: string,
+): Validator | undefined => {
+    const attributeObject: IAttributeObject | undefined = GetAttribute(
+        attributeName,
+        validatorName,
+    );
+
+    if (attributeObject && attributeObject.attributeArgumentValidator) {
+        return attributeObject!.attributeArgumentValidator;
+    }
+};
+
+/**
+ * Gets the attribute validator.
+ * @param attributeName
+ * @param validatorName
+ */
 export const GetAttributeValidator = (
     attributeName: string,
     validatorName: string,
 ): AttributeValidator | undefined => {
-    let attributeDescription: IAttributeObject | undefined;
-    if (
-        validatorName in RegisteredValidators &&
-        attributeName in RegisteredValidators[validatorName].attributes
-    ) {
-        attributeDescription =
-            RegisteredValidators[validatorName].attributes[attributeName];
-    }
+    const attributeObject: IAttributeObject | undefined = GetAttribute(
+        attributeName,
+        validatorName,
+    );
 
-    if (typeof attributeDescription !== 'undefined') {
-        return (value: any, validationValue: any): ValidationResponse => {
-            const response: ValidationResponse = attributeDescription!.attributeArgumentValidator(
-                validationValue,
-            );
-
-            if (
-                typeof attributeDescription!.attributeValidator !==
-                    'undefined' &&
-                typeof response === 'undefined'
-            ) {
-                return attributeDescription!.attributeValidator!(
-                    value,
-                    validationValue,
-                );
-            } else if (typeof response !== 'undefined') {
-                const errorHandler: ErrorHandler = new ErrorHandler();
-                errorHandler.reportError('TypeError', response);
-
-                return errorHandler.getReport();
-            }
-        };
+    if (attributeObject && attributeObject.attributeValidator) {
+        return attributeObject!.attributeValidator;
     }
 };
 
@@ -224,21 +254,36 @@ export const GetWrappedAttributeValidator = (
         );
     }
 
+    if (!HasAttribute(attributeName, validatorName)) {
+        return undefined;
+    }
+
     const attributeValidator:
         | AttributeValidator
         | undefined = GetAttributeValidator(attributeName, validatorName);
 
     if (typeof attributeValidator !== 'undefined') {
+        const attributeArgumentValidator: Validator = GetAttributeArgumentValidator(
+            attributeName,
+            validatorName,
+        ) as Validator;
+
         return (value: any, validationValue: any): boolean => {
+            const argumentResponse: ValidationResponse = attributeArgumentValidator(
+                validationValue,
+            );
+
+            if (argumentResponse) {
+                throw new TypeError(argumentResponse as string);
+            }
+
             const response: ValidationResponse = attributeValidator(
                 value,
                 validationValue,
             );
 
-            if (typeof response === 'string') {
+            if (response) {
                 return false;
-            } else if (typeof response === 'object') {
-                throw new TypeError(response.TypeError! as string);
             }
 
             return true;
