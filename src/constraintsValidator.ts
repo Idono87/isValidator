@@ -1,18 +1,20 @@
 import { IAttributes } from './attributes/attributes';
 import { ErrorHandler, ErrorReport } from './errorHandler';
 import {
+    GetAttributeArgumentValidator,
     GetValidator,
+    HasAttribute,
     IConstraints,
     IPropertyConstraints,
 } from './isValidator';
-import { ValidationResponse, Validator } from './validators';
+import { isObject, ValidationResponse, Validator } from './validators';
 
 /**
  * Validates the given constraints.
  */
-export class ConstraintsValidatator {
-    public static Validate(constraints: IConstraints): ValidationResponse {
-        const constraintValidator: ConstraintsValidatator = new ConstraintsValidatator(
+export default class ConstraintsValidator {
+    public static validate(constraints: IConstraints): ValidationResponse {
+        const constraintValidator: ConstraintsValidator = new ConstraintsValidator(
             constraints,
         );
 
@@ -55,10 +57,7 @@ export class ConstraintsValidatator {
     }
 
     /**
-     * Loops through all properties in the IConstraints object.
-     * If the property is an object validate the property constraints.
-     * Otherwise report an error and continue to the next property.
-     *
+     * Validates the defined properties.
      */
     private validateProperties(): ValidationResponse {
         for (const key in this.constraints) {
@@ -66,7 +65,7 @@ export class ConstraintsValidatator {
                 this.errorPath.push(key);
 
                 const propertyValue = this.constraints[key];
-                if (this.validatePropertyConstraintAsObject(propertyValue)) {
+                if (this.isObject(propertyValue)) {
                     this.validatePropertyConstraints(propertyValue);
                 }
 
@@ -82,8 +81,8 @@ export class ConstraintsValidatator {
      *
      * @param propertyValue
      */
-    private validatePropertyConstraintAsObject(propertyValue: any): boolean {
-        if (typeof propertyValue !== 'object') {
+    private isObject(propertyValue: any): boolean {
+        if (isObject(propertyValue)) {
             this.reportError('Constraints should be an object.');
             return false;
         }
@@ -91,6 +90,11 @@ export class ConstraintsValidatator {
         return true;
     }
 
+    /**
+     * Validates the property constraints.
+     *
+     * @param propertyConstraints
+     */
     private validatePropertyConstraints(
         propertyConstraints: IPropertyConstraints,
     ) {
@@ -99,24 +103,18 @@ export class ConstraintsValidatator {
                 this.errorPath.push(key);
 
                 const propertyConstraintValue = propertyConstraints[key];
-                if (
-                    !(
-                        this.isPropertyConstraintOption(key) &&
-                        this.validatePropertyConstraintOptionValueAsBoolean(
-                            propertyConstraints[key],
-                        )
-                    )
-                ) {
-                    if (
-                        this.isPropertyConstraint(key) &&
-                        this.validatePropertyConstraintAsObject(
-                            propertyConstraintValue,
-                        )
-                    ) {
-                        this.validateValidatorAttributes(
-                            key,
-                            propertyConstraintValue as IAttributes,
-                        );
+                if (this.isPropertyConstraintOption(key)) {
+                    this.validatePropertyConstraintOptionValueAsBoolean(
+                        propertyConstraints[key],
+                    );
+                } else {
+                    if (this.isPropertyConstraint(key)) {
+                        if (this.isObject(propertyConstraintValue)) {
+                            this.validateValidatorAttributes(
+                                key,
+                                propertyConstraintValue as IAttributes,
+                            );
+                        }
                     }
                 }
 
@@ -131,7 +129,7 @@ export class ConstraintsValidatator {
      * @param constraint
      */
     private isPropertyConstraintOption(constraint: string) {
-        return ConstraintsValidatator.constraintOptions.has(constraint);
+        return ConstraintsValidator.constraintOptions.has(constraint);
     }
 
     /**
@@ -146,7 +144,7 @@ export class ConstraintsValidatator {
     }
 
     /**
-     * Validate that the validator exists.
+     * Checks if the validator exists.
      * @param key
      */
     private isPropertyConstraint(key: string): boolean {
@@ -159,6 +157,12 @@ export class ConstraintsValidatator {
         return true;
     }
 
+    /**
+     * Validates the validator attributes.
+     *
+     * @param validatorKey
+     * @param validatorAttributes
+     */
     private validateValidatorAttributes(
         validatorKey: string,
         validatorAttributes: IAttributes,
@@ -180,6 +184,12 @@ export class ConstraintsValidatator {
         }
     }
 
+    /**
+     * Checks if the give attribute is a registered attribute constraint.
+     *
+     * @param key
+     * @param validatorKey
+     */
     private isAttributeConstraint(key: string, validatorKey: string) {
         if (!HasAttribute(key, validatorKey)) {
             this.reportError('Attribute does not exist.');
@@ -189,6 +199,13 @@ export class ConstraintsValidatator {
         return true;
     }
 
+    /**
+     * Validates the attribute argument.
+     *
+     * @param key
+     * @param validatorKey
+     * @param attributeValue
+     */
     private validateAttributeArgument(
         key: string,
         validatorKey: string,
@@ -197,7 +214,7 @@ export class ConstraintsValidatator {
         const argumentValidator: Validator = GetAttributeArgumentValidator(
             key,
             validatorKey,
-        );
+        ) as Validator;
 
         const response: ValidationResponse = argumentValidator(attributeValue);
 
