@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
 import ConstraintsValidator from '../../constraintsValidator';
+import TypeError from '../../errors/typeError';
 import {
     IConstraints,
-    RegisterAttribute,
     RegisterDefaultAttribute,
     RegisterDefaultValidator,
 } from '../../isValidator';
@@ -40,6 +40,12 @@ describe('ConstraintsValidator', function() {
                 );
             }
         }
+    });
+
+    it('Expect constraints argument to be an object', function() {
+        expect(() => {
+            ConstraintsValidator.validate('not an object' as any);
+        }).to.throw(TypeError);
     });
 
     describe('IConstraints Tests', function() {

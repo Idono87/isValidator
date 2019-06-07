@@ -44,7 +44,7 @@ describe('ValidateNestedObject integration test', function() {
     it('Expect to fail validation', function() {
         expect(Validate(obj, failing, options))
             .to.have.nested.property(
-                'property.validateNestedObject.failOnStrict.expect',
+                'property.validateNestedObject.failOnStrict',
             )
             .and.be.a('string');
     });

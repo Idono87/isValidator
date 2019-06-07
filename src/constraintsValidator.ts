@@ -1,5 +1,6 @@
 import { IAttributes } from './attributes/attributes';
 import { ErrorHandler, ErrorReport } from './errorHandler';
+import TypeError from './errors/typeError';
 import {
     GetAttributeArgumentValidator,
     GetValidator,
@@ -13,7 +14,11 @@ import { isObject, ValidationResponse, Validator } from './validators';
  * Validates the given constraints.
  */
 export default class ConstraintsValidator {
-    public static validate(constraints: IConstraints): ValidationResponse {
+    public static validate(constraints: IConstraints): ErrorReport {
+        if (isObject(constraints)) {
+            throw new TypeError('Given constraints is not of type object.');
+        }
+
         const constraintValidator: ConstraintsValidator = new ConstraintsValidator(
             constraints,
         );
@@ -59,7 +64,7 @@ export default class ConstraintsValidator {
     /**
      * Validates the defined properties.
      */
-    private validateProperties(): ValidationResponse {
+    private validateProperties(): ErrorReport {
         for (const key in this.constraints) {
             if (this.constraints.hasOwnProperty(key)) {
                 this.errorPath.push(key);

@@ -143,7 +143,7 @@ As shown in the example. Define a second constraints object implementing the [IC
 
 
 # Error Reports
-[Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] once validation has finished. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
+[Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] either when constraints validation fails or the object/value validation fails. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
 
 ```typescript
 import { ErrorReport, IConstraints, Validate } from 'isValidator';

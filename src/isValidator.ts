@@ -20,11 +20,12 @@ import {
     IAttributes,
     IValidatorAttributes,
 } from './attributes/attributes';
-import { ErrorHandler, ErrorReport } from './errorHandler';
+import { ErrorReport } from './errorHandler';
 import AttributeRegistrationError from './errors/attributeRegistrationError';
 import MissingValidatorReferenceError from './errors/missingValidatorReferenceError';
 import NamingCollisionError from './errors/namingCollisionError';
 import TypeError from './errors/typeError';
+import ObjectValidator from './objectValidator';
 import * as Validators from './validators';
 type Validator = Validators.Validator;
 type ValidationResponse = Validators.ValidationResponse;
@@ -45,7 +46,8 @@ import { IStringAttributes } from './attributes/stringAttributes';
 import { ISymbolAttributes } from './attributes/symbolAttributes';
 import { ITypeAttributes } from './attributes/typeAttributes';
 import { IUndefinedAttributes } from './attributes/undefinedAttributes';
-import { ValidationObject } from './validationObject';
+import ConstraintOptions from './constraintOptions';
+import ConstraintsValidator from './constraintsValidator';
 
 /**
  * Interface for building constraints objects.
@@ -569,13 +571,25 @@ export const Validate = (
     options?: IConstraintOptions,
 ): ErrorReport => {
     try {
-        const validateObject: ValidationObject = new ValidationObject(
-            objectToValidate,
-            constraints,
+        const constraintsOptions: IConstraintOptions = ConstraintOptions.createConstraintOptions(
             options,
         );
 
-        return validateObject.Validate();
+        let errorReport: ErrorReport = ConstraintsValidator.validate(
+            constraints,
+        );
+
+        if (errorReport) {
+            return errorReport;
+        }
+
+        errorReport = ObjectValidator.validate(
+            objectToValidate,
+            constraints,
+            constraintsOptions,
+        );
+
+        return errorReport;
     } catch (err) {
         throw new err.constructor(err.message, Validate);
     }
