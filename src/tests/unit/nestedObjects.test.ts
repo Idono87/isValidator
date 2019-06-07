@@ -79,7 +79,7 @@ describe('validateNestedObject', function() {
             options,
         );
         expect(toTest)
-            .to.have.nested.property('property.reject')
+            .to.have.nested.property('property')
             .and.be.a('string');
     });
 });

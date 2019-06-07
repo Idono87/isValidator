@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import { AttributeValidator } from '../../attributes/attributes';
 import {
-    GetAttributeValidator,
+    HasAttribute,
     RegisterAttribute,
     RegisterValidator,
 } from '../../isValidator';
 import { Validator } from '../../validators';
 
-describe('GetAttributeValidator', function() {
+describe('HasAttribute', function() {
     const validator: Validator = () => {};
     const validatorName: string = 'testValidator';
     RegisterValidator(validatorName, validator);
@@ -20,35 +20,27 @@ describe('GetAttributeValidator', function() {
             return 'Failed Validation';
         }
     };
-    const attributeNameOne: string = 'testAttributeOne';
-    const attributeNameTwo: string = 'testAttributeTwo';
+
+    const attributeName: string = 'testAttributeOne';
+
     const argumentValidator: Validator = (value: any) => {
         if (!value) {
             return 'Failed Validation.';
         }
     };
+
     RegisterAttribute(
-        attributeNameOne,
+        attributeName,
         validatorName,
         argumentValidator,
         attributeValidator,
     );
 
-    RegisterAttribute(attributeNameTwo, validatorName, argumentValidator);
-
-    it(`Expect to return attribute validator.`, function() {
-        expect(GetAttributeValidator(attributeNameOne, validatorName)).to.equal(
-            attributeValidator,
-        );
+    it('Expect attribute to exist', function() {
+        expect(HasAttribute(attributeName, validatorName)).to.be.true;
     });
 
-    it(`Expect undefined for property attribute.`, function() {
-        expect(GetAttributeValidator(attributeNameTwo, validatorName)).to.be
-            .undefined;
-    });
-
-    it(`Expect undefined for non existing attribute.`, function() {
-        expect(GetAttributeValidator('does not exist', validatorName)).to.be
-            .undefined;
+    it('Expect attribute to not exist', function() {
+        expect(HasAttribute('does not exist', validatorName)).to.be.false;
     });
 });

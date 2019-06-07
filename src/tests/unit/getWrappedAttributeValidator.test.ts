@@ -34,7 +34,7 @@ describe('GetWrappedAttributeValidator', function() {
         attributeValidator,
     );
 
-    it(`Expect attribute validator ${attributeName} to return false.`, function() {
+    it(`Expect validator to validate to false`, function() {
         expect(
             GetWrappedAttributeValidator(attributeName, validatorName)!(
                 'fail',
@@ -43,7 +43,7 @@ describe('GetWrappedAttributeValidator', function() {
         ).to.be.false;
     });
 
-    it(`Expect attribute validator ${attributeName} to return true.`, function() {
+    it(`Expect validator to validate to true.`, function() {
         expect(
             GetWrappedAttributeValidator(attributeName, validatorName)!(
                 'pass',

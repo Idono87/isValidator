@@ -20,11 +20,12 @@ import {
     IAttributes,
     IValidatorAttributes,
 } from './attributes/attributes';
-import { ErrorHandler, ErrorReport } from './errorHandler';
+import { ErrorReport } from './errorHandler';
 import AttributeRegistrationError from './errors/attributeRegistrationError';
 import MissingValidatorReferenceError from './errors/missingValidatorReferenceError';
 import NamingCollisionError from './errors/namingCollisionError';
 import TypeError from './errors/typeError';
+import ObjectValidator from './objectValidator';
 import * as Validators from './validators';
 type Validator = Validators.Validator;
 type ValidationResponse = Validators.ValidationResponse;
@@ -45,7 +46,8 @@ import { IStringAttributes } from './attributes/stringAttributes';
 import { ISymbolAttributes } from './attributes/symbolAttributes';
 import { ITypeAttributes } from './attributes/typeAttributes';
 import { IUndefinedAttributes } from './attributes/undefinedAttributes';
-import { ValidationObject } from './validationObject';
+import ConstraintOptions from './constraintOptions';
+import ConstraintsValidator from './constraintsValidator';
 
 /**
  * Interface for building constraints objects.
@@ -85,6 +87,8 @@ export interface IPropertyConstraints {
     isType?: ITypeAttributes;
     isUndefined?: IUndefinedAttributes;
     validateNestedObject?: INestedObjectAttributes;
+
+    readonly [name: string]: IAttributes | boolean | undefined;
 }
 
 /**
@@ -162,41 +166,71 @@ export const GetWrappedValidator = (
     }
 };
 
+/**
+ * Checks if the attribute exists.
+ * @param attributeName
+ * @param validatorName
+ */
+export const HasAttribute = (
+    attributeName: string,
+    validatorName: string,
+): boolean => {
+    return (
+        validatorName in RegisteredValidators &&
+        attributeName in RegisteredValidators[validatorName].attributes
+    );
+};
+
+/**
+ * Gets the attribute object.
+ * @param attributeName
+ * @param validatorName
+ */
+const GetAttribute = (
+    attributeName: string,
+    validatorName: string,
+): IAttributeObject | undefined => {
+    if (HasAttribute(attributeName, validatorName)) {
+        return RegisteredValidators[validatorName].attributes[attributeName];
+    }
+};
+
+/**
+ * Gets the attribute argument validator.
+ *
+ * @param attributeName
+ * @param validatorName
+ */
+export const GetAttributeArgumentValidator = (
+    attributeName: string,
+    validatorName: string,
+): Validator | undefined => {
+    const attributeObject: IAttributeObject | undefined = GetAttribute(
+        attributeName,
+        validatorName,
+    );
+
+    if (attributeObject && attributeObject.attributeArgumentValidator) {
+        return attributeObject!.attributeArgumentValidator;
+    }
+};
+
+/**
+ * Gets the attribute validator.
+ * @param attributeName
+ * @param validatorName
+ */
 export const GetAttributeValidator = (
     attributeName: string,
     validatorName: string,
 ): AttributeValidator | undefined => {
-    let attributeDescription: IAttributeObject | undefined;
-    if (
-        validatorName in RegisteredValidators &&
-        attributeName in RegisteredValidators[validatorName].attributes
-    ) {
-        attributeDescription =
-            RegisteredValidators[validatorName].attributes[attributeName];
-    }
+    const attributeObject: IAttributeObject | undefined = GetAttribute(
+        attributeName,
+        validatorName,
+    );
 
-    if (typeof attributeDescription !== 'undefined') {
-        return (value: any, validationValue: any): ValidationResponse => {
-            const response: ValidationResponse = attributeDescription!.attributeArgumentValidator(
-                validationValue,
-            );
-
-            if (
-                typeof attributeDescription!.attributeValidator !==
-                    'undefined' &&
-                typeof response === 'undefined'
-            ) {
-                return attributeDescription!.attributeValidator!(
-                    value,
-                    validationValue,
-                );
-            } else if (typeof response !== 'undefined') {
-                const errorHandler: ErrorHandler = new ErrorHandler();
-                errorHandler.reportError('TypeError', response);
-
-                return errorHandler.getReport();
-            }
-        };
+    if (attributeObject && attributeObject.attributeValidator) {
+        return attributeObject!.attributeValidator;
     }
 };
 
@@ -224,21 +258,36 @@ export const GetWrappedAttributeValidator = (
         );
     }
 
+    if (!HasAttribute(attributeName, validatorName)) {
+        return undefined;
+    }
+
     const attributeValidator:
         | AttributeValidator
         | undefined = GetAttributeValidator(attributeName, validatorName);
 
     if (typeof attributeValidator !== 'undefined') {
+        const attributeArgumentValidator: Validator = GetAttributeArgumentValidator(
+            attributeName,
+            validatorName,
+        ) as Validator;
+
         return (value: any, validationValue: any): boolean => {
+            const argumentResponse: ValidationResponse = attributeArgumentValidator(
+                validationValue,
+            );
+
+            if (argumentResponse) {
+                throw new TypeError(argumentResponse as string);
+            }
+
             const response: ValidationResponse = attributeValidator(
                 value,
                 validationValue,
             );
 
-            if (typeof response === 'string') {
+            if (response) {
                 return false;
-            } else if (typeof response === 'object') {
-                throw new TypeError(response.TypeError! as string);
             }
 
             return true;
@@ -522,13 +571,25 @@ export const Validate = (
     options?: IConstraintOptions,
 ): ErrorReport => {
     try {
-        const validateObject: ValidationObject = new ValidationObject(
-            objectToValidate,
-            constraints,
+        const constraintsOptions: IConstraintOptions = ConstraintOptions.createConstraintOptions(
             options,
         );
 
-        return validateObject.Validate();
+        let errorReport: ErrorReport = ConstraintsValidator.validate(
+            constraints,
+        );
+
+        if (errorReport) {
+            return errorReport;
+        }
+
+        errorReport = ObjectValidator.validate(
+            objectToValidate,
+            constraints,
+            constraintsOptions,
+        );
+
+        return errorReport;
     } catch (err) {
         throw new err.constructor(err.message, Validate);
     }
