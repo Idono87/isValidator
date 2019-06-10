@@ -3,6 +3,7 @@
 - [Validating Objects](#validating-objects)
 - [Validate Value](#validate-value)
 - [Validating Nested Objects](#validating-nested-objects)
+- [Validating Constraints](#validating-constraints)
 - [Error Reports](#error-reports)
 - [Strict validation](#strict-validation)
 - [Property Options](#property-options)
@@ -142,6 +143,36 @@ if (typeof result !== 'undefined') {
 As shown in the example. Define a second constraints object implementing the [IConstraints][iconstraints] interface and assign it to the 'constraints' attribute for validateNestedObject. 
 
 
+# Validating Constraints
+
+Testing and validating constraints can be done separately from the validation process. Simply call the [ValidateConstraints][valconst] function and inspect the the return value for any errors. 
+
+```typescript
+import { ErrorReport, IConstraints, ValidateConstraints } from 'isValidator';
+
+const constraints: IConstraints = {
+    age: {
+        isNumber: {
+            isLargerThanOrEqualTo: 18,
+        },
+    },
+    email: {
+        isString: {
+            matchRegExp: /.{1,200}@{1,200}\..{1,3}/,
+        },
+    },
+    name: {
+        isString: {},
+    },
+};
+
+const result: ErrorReport = ValidateConstraints(person, constraints);
+
+if (typeof result !== 'undefined') {
+    //Log errors
+}
+```
+
 # Error Reports
 [Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] either when constraints validation fails or the object/value validation fails. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
 
@@ -274,3 +305,4 @@ There is also the ```exclude``` option which excludes the assigned property from
 [special]:../api/isvalidator.md#special-property-constraints
 [validate]:../api/isvalidator.md#validate
 [validatevalue]:../api/isvalidator.md#validatevalue
+[valconst]: ../api/isvalidator.md#validateconstraints
