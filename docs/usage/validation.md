@@ -145,7 +145,7 @@ As shown in the example. Define a second constraints object implementing the [IC
 
 # Validating Constraints
 
-Testing and validating constraints can be done separately from the validation process. Simply call the [ValidateConstraints][valconst] function and inspect the the return value for any errors. 
+Testing and validating constraints can be done separately from the validation process. Simply call the [ValidateConstraints][valconst] functions and inspect the return value for any errors. 
 
 ```typescript
 import { ErrorReport, IConstraints, ValidateConstraints } from 'isValidator';
@@ -166,7 +166,25 @@ const constraints: IConstraints = {
     },
 };
 
-const result: ErrorReport = ValidateConstraints(person, constraints);
+const result: ErrorReport = ValidateConstraints(constraints);
+
+if (typeof result !== 'undefined') {
+    //Log errors
+}
+```
+
+Property constraints passed into ```ValidateValue``` can also be validate with the [ValidatePropertyConstraints][valpropconst] function. 
+
+```typescript
+import { ErrorReport, IConstraints, ValidateConstraints } from 'isValidator';
+
+const constraints: IPropertyConstraints = {
+    isNumber: {
+        isLargerThanOrEqualTo: 18,
+    },
+};
+
+const result: ErrorReport = ValidatePropertyConstraints(constraints);
 
 if (typeof result !== 'undefined') {
     //Log errors
@@ -306,3 +324,4 @@ There is also the ```exclude``` option which excludes the assigned property from
 [validate]:../api/isvalidator.md#validate
 [validatevalue]:../api/isvalidator.md#validatevalue
 [valconst]: ../api/isvalidator.md#validateconstraints
+[valpropconst]: ../api/isvalidator.md#validateconstraints

@@ -405,6 +405,7 @@ export {
     Validate,
     ValidateValue,
     ValidateConstraints,
+    ValidatePropertyConstraints,
 } from './isValidator';
 
 export { IAttributes, AttributeValidator } from './attributes/attributes';
