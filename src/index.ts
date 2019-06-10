@@ -404,6 +404,7 @@ export {
     RemoveValidator,
     Validate,
     ValidateValue,
+    ValidateConstraints,
 } from './isValidator';
 
 export { IAttributes, AttributeValidator } from './attributes/attributes';

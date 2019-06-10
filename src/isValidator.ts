@@ -594,3 +594,19 @@ export const Validate = (
         throw new err.constructor(err.message, Validate);
     }
 };
+
+/**
+ * Validates the give constraint object.
+ *
+ * @param constraints
+ */
+export const ValidateConstraints = (constraints: IConstraints): ErrorReport => {
+    let errorReport: ErrorReport;
+    try {
+        errorReport = ConstraintsValidator.validate(constraints);
+    } catch (err) {
+        throw new err.constructor(err.message, ValidateConstraints);
+    }
+
+    return errorReport;
+};

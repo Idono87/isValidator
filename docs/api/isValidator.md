@@ -21,6 +21,7 @@
   - [RemoveValidator](#removevalidator)
   - [Validate](#validate)
   - [ValidateValue](#validatevalue)
+  - [ValidateConstraints](#validateconstraints)
 
 
 # Re-Exports
@@ -215,3 +216,12 @@ Registers a new ```Validator``` with the given name.
   ```
 
 Validates the given value with the given constraints and returns an ```ErrorReport```
+
+
+## ValidateConstraints
+
+* ```typescript
+    (constraints:IConstraints) => ErrorReport
+  ```
+
+Validates the given constraints object. Returns an error report ```ErrorReport```.
