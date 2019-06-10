@@ -22,6 +22,7 @@
   - [Validate](#validate)
   - [ValidateValue](#validatevalue)
   - [ValidateConstraints](#validateconstraints)
+  - [ValidatePropertyConstraints](#validatepropertyconstraints)
 
 
 # Re-Exports
@@ -225,3 +226,11 @@ Validates the given value with the given constraints and returns an ```ErrorRepo
   ```
 
 Validates the given constraints object. Returns an error report ```ErrorReport```.
+
+## ValidatePropertyConstraints
+
+* ```typescript
+    (constraints:IPropertyConstraints) => ErrorReport
+  ```
+
+Validates the given property constraints object. Returns an error report ```ErrorReport```.

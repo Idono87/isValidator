@@ -610,3 +610,31 @@ export const ValidateConstraints = (constraints: IConstraints): ErrorReport => {
 
     return errorReport;
 };
+
+/**
+ * Validates the given property constraints.
+ *
+ * @param propertyConstraints
+ */
+export const ValidatePropertyConstraints = (
+    propertyConstraints: IPropertyConstraints,
+) => {
+    if (Validators.isObject(propertyConstraints)) {
+        throw new TypeError(
+            'Expecting "propertyConstraints" to be an object.',
+            ValidatePropertyConstraints,
+        );
+    }
+
+    const constraints: IConstraints = {
+        property: propertyConstraints,
+    };
+
+    const errorReport: ErrorReport = ConstraintsValidator.validate(constraints);
+
+    if (typeof errorReport !== 'undefined') {
+        return errorReport.property;
+    }
+
+    return errorReport;
+};
