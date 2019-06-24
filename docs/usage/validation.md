@@ -1,11 +1,13 @@
 <h1>Usage - Validation</h1>
 
-- [Validating Objects](#validating-objects)
-- [Validate Value](#validate-value)
-- [Validating Nested Objects](#validating-nested-objects)
-- [Error Reports](#error-reports)
-- [Strict validation](#strict-validation)
-- [Property Options](#property-options)
+- [Validating Objects](#Validating-Objects)
+- [Validate Value](#Validate-Value)
+- [Validating Nested Objects](#Validating-Nested-Objects)
+- [Validating Constraints](#Validating-Constraints)
+- [Cached Constraints](#Cached-Constraints)
+- [Error Reports](#Error-Reports)
+- [Strict validation](#Strict-validation)
+- [Property Options](#Property-Options)
 
 # Validating Objects
 
@@ -142,8 +144,63 @@ if (typeof result !== 'undefined') {
 As shown in the example. Define a second constraints object implementing the [IConstraints][iconstraints] interface and assign it to the 'constraints' attribute for validateNestedObject. 
 
 
+# Validating Constraints
+
+Testing and validating constraints can be done separately from the validation process. Simply call the [ValidateConstraints][valconst] functions and inspect the return value for any errors. 
+
+```typescript
+import { ErrorReport, IConstraints, ValidateConstraints } from 'isValidator';
+
+const constraints: IConstraints = {
+    age: {
+        isNumber: {
+            isLargerThanOrEqualTo: 18,
+        },
+    },
+    email: {
+        isString: {
+            matchRegExp: /.{1,200}@{1,200}\..{1,3}/,
+        },
+    },
+    name: {
+        isString: {},
+    },
+};
+
+const result: ErrorReport = ValidateConstraints(constraints);
+
+if (typeof result !== 'undefined') {
+    //Log errors
+}
+```
+
+Property constraints passed into ```ValidateValue``` can also be validate with the [ValidatePropertyConstraints][valpropconst] function. 
+
+```typescript
+import { ErrorReport, IConstraints, ValidateConstraints } from 'isValidator';
+
+const constraints: IPropertyConstraints = {
+    isNumber: {
+        isLargerThanOrEqualTo: 18,
+    },
+};
+
+const result: ErrorReport = ValidatePropertyConstraints(constraints);
+
+if (typeof result !== 'undefined') {
+    //Log errors
+}
+```
+# Cached Constraints
+
+When validating constraints with the ```ValidateConstraints``` function and the validation passes, the constraints will get cloned and stored in a cache. Passing the original constraints object into ```Validate``` will retrieve the cached constraints and bypass the constraints validation step during validation.
+
+The original constraints object acts as the key for accessing the cache and it does so by the objects reference. Thus any changes made to the original constraints object will not be reflected in the cached constraints. To updated the cached constraints simply call ```ValidateConstraints```with the modified original constraints object. 
+
+To remove a cached constraints object simply remove all references to the original constraints object and the garbage collector will automatically remove the cached constraints.
+
 # Error Reports
-[Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] once validation has finished. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
+[Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] either when constraints validation fails or the object/value validation fails. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
 
 ```typescript
 import { ErrorReport, IConstraints, Validate } from 'isValidator';
@@ -274,3 +331,5 @@ There is also the ```exclude``` option which excludes the assigned property from
 [special]:../api/isvalidator.md#special-property-constraints
 [validate]:../api/isvalidator.md#validate
 [validatevalue]:../api/isvalidator.md#validatevalue
+[valconst]: ../api/isvalidator.md#validateconstraints
+[valpropconst]: ../api/isvalidator.md#validateconstraints

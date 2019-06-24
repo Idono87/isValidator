@@ -1,26 +1,28 @@
 <h1>API Documentation - isValidator</h1>
 
-- [Re-Exports](#re-exports)
-  - [Validators](#validators)
-  - [IAttributes](#iattributes)
-  - [ErrorHandler](#errorhandler)
-- [Interfaces](#interfaces)
-  - [IConstraints](#iconstraints)
-  - [IConstraintOptions](#iconstraintoptions)
-    - [Options](#options)
-  - [IPropertyConstraints](#ipropertyconstraints)
-    - [Special Property Constraints](#special-property-constraints)
-- [Functions](#functions)
-  - [GetAttributeValidator](#getattributevalidator)
-  - [GetValidator](#getvalidator)
-  - [GetWrappedAttributeValidator](#getwrappedattributevalidator)
-  - [GetWrappedValidator](#getwrappedvalidator)
-  - [RegisterAttribute](#registerattribute)
-  - [RegisterValidator](#registervalidator)
-  - [RemoveAttribute](#removeattribute)
-  - [RemoveValidator](#removevalidator)
-  - [Validate](#validate)
-  - [ValidateValue](#validatevalue)
+- [Re-Exports](#Re-Exports)
+  - [Validators](#Validators)
+  - [IAttributes](#IAttributes)
+  - [ErrorHandler](#ErrorHandler)
+- [Interfaces](#Interfaces)
+  - [IConstraints](#IConstraints)
+  - [IConstraintOptions](#IConstraintOptions)
+    - [Options](#Options)
+  - [IPropertyConstraints](#IPropertyConstraints)
+    - [Special Property Constraints](#Special-Property-Constraints)
+- [Functions](#Functions)
+  - [GetAttributeValidator](#GetAttributeValidator)
+  - [GetValidator](#GetValidator)
+  - [GetWrappedAttributeValidator](#GetWrappedAttributeValidator)
+  - [GetWrappedValidator](#GetWrappedValidator)
+  - [RegisterAttribute](#RegisterAttribute)
+  - [RegisterValidator](#RegisterValidator)
+  - [RemoveAttribute](#RemoveAttribute)
+  - [RemoveValidator](#RemoveValidator)
+  - [Validate](#Validate)
+  - [ValidateValue](#ValidateValue)
+  - [ValidateConstraints](#ValidateConstraints)
+  - [ValidatePropertyConstraints](#ValidatePropertyConstraints)
 
 
 # Re-Exports
@@ -150,7 +152,7 @@ Retrieves the given validator.
 * ```typescript
     (attributeName:string, validatorName:string) => AttributeValidationFunction | undefined
   ```
-Retrieves a wrapped attribute validator associated with the given validator.
+Retrieves a wrapped attribute validator associated with the given validator. The wrapped attribute validator automatically type checks the ```validationValue``` to match the retrieved attribute argument type. Throws a TypeError if the argument validation fails.
 
 
 ## GetWrappedValidator
@@ -215,3 +217,20 @@ Registers a new ```Validator``` with the given name.
   ```
 
 Validates the given value with the given constraints and returns an ```ErrorReport```
+
+
+## ValidateConstraints
+
+* ```typescript
+    (constraints:IConstraints) => ErrorReport
+  ```
+
+Validates the given constraints object. Returns an error report ```ErrorReport```.
+
+## ValidatePropertyConstraints
+
+* ```typescript
+    (constraints:IPropertyConstraints) => ErrorReport
+  ```
+
+Validates the given property constraints object. Returns an error report ```ErrorReport```.

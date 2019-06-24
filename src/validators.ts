@@ -18,11 +18,26 @@
  * Built in default validators. All validators return a string when validation fails otherwise undefined.
  */
 
+import { IArrayBufferAttributes } from './attributes/arrayBufferAttributes';
 import { IAttributes } from './attributes/attributes';
 import { INestedObjectAttributes } from './attributes/nestedObjectAttributes';
 import { ITypeAttributes } from './attributes/typeAttributes';
 import { ErrorReport } from './errorHandler';
 import { IConstraintOptions, Validate } from './isValidator';
+
+import { IArrayAttributes } from './attributes/arrayAttributes';
+import { IBooleanAttributes } from './attributes/booleanAttributes';
+import { IDateAttributes } from './attributes/dateAttributes';
+import { IErrorAttributes } from './attributes/errorAttributes';
+import { IFunctionAttributes } from './attributes/functionAttributes';
+import { INullAttributes } from './attributes/nullAttributes';
+import { INumberAttributes } from './attributes/numberAttributes';
+import { IObjectAttributes } from './attributes/objectAttributes';
+import { IPromiseAttributes } from './attributes/promiseAttributes';
+import { IRegexpAttributes } from './attributes/regexpAttributes';
+import { IStringAttributes } from './attributes/stringAttributes';
+import { ISymbolAttributes } from './attributes/symbolAttributes';
+import { IUndefinedAttributes } from './attributes/undefinedAttributes';
 
 /**
  * Typing for validation responses.
@@ -50,7 +65,7 @@ export type Validator = (
 export const isString: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IStringAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(typeof value === 'string' || value instanceof String)) {
@@ -69,7 +84,7 @@ export const isString: Validator = (
 export const isNumber: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: INumberAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(typeof value === 'number' || isFinite(value))) {
@@ -88,7 +103,7 @@ export const isNumber: Validator = (
 export const isArray: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IArrayAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value && typeof value === 'object' && value.constructor === Array)) {
@@ -107,7 +122,7 @@ export const isArray: Validator = (
 export const isFunction: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IFunctionAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (typeof value !== 'function') {
@@ -126,7 +141,7 @@ export const isFunction: Validator = (
 export const isObject: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IObjectAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value && typeof value === 'object' && value.constructor === Object)) {
@@ -146,7 +161,7 @@ export const isObject: Validator = (
 export const isNull: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: INullAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (value !== null) {
@@ -165,7 +180,7 @@ export const isNull: Validator = (
 export const isUndefined: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IUndefinedAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (typeof value !== 'undefined') {
@@ -184,7 +199,7 @@ export const isUndefined: Validator = (
 export const isBoolean: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IBooleanAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (typeof value !== 'boolean') {
@@ -203,7 +218,7 @@ export const isBoolean: Validator = (
 export const isRegExp: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IRegexpAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value && typeof value === 'object' && value.constructor === RegExp)) {
@@ -222,7 +237,7 @@ export const isRegExp: Validator = (
 export const isError: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IErrorAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value instanceof Error && typeof value.message !== 'undefined')) {
@@ -241,7 +256,7 @@ export const isError: Validator = (
 export const isDate: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IDateAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value instanceof Date)) {
@@ -260,7 +275,7 @@ export const isDate: Validator = (
 export const isSymbol: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: ISymbolAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (typeof value !== 'symbol') {
@@ -279,7 +294,7 @@ export const isSymbol: Validator = (
 export const isPromise: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IPromiseAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     if (!(value && value instanceof Promise)) {
@@ -332,7 +347,7 @@ export const isType: Validator = (
 export const isDataType: Validator = (
     value: any,
     key?: string,
-    attributes?: IAttributes,
+    attributes?: IDateAttributes,
     options?: IConstraintOptions,
 ): ValidationResponse => {
     const isPrimitive: boolean =
@@ -375,4 +390,27 @@ export const validateNestedObject: Validator = (
     }
 
     return Validate(value, attributes!.constraints!, options);
+};
+
+/**
+ * Validates if the given value is an array buffer
+ *
+ * @param value - The value to validate.
+ * @param key
+ * @param attributes
+ * @param options
+ */
+export const isArrayBuffer: Validator = (
+    value: any,
+    key?: string,
+    attributes?: IArrayBufferAttributes,
+    options?: IConstraintOptions,
+): ValidationResponse => {
+    const isTypeAttributes = {
+        type: ArrayBuffer,
+    };
+
+    if (isType(value, key, isTypeAttributes, options)) {
+        return 'Value is not an ArrayBuffer.';
+    }
 };

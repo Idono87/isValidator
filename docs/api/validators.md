@@ -1,24 +1,25 @@
 <h1>API Documentation - Validators</h1>
 
-- [Types](#types)
-  - [ValidationResponse](#validationresponse)
-  - [Validator](#validator)
-- [Functions](#functions)
-  - [isArray](#isarray)
-  - [isBoolean](#isboolean)
-  - [isDate](#isdate)
-  - [isError](#iserror)
-  - [isFunction](#isfunction)
-  - [isNull](#isnull)
-  - [isNumber](#isnumber)
-  - [isObject](#isobject)
-  - [isPromise](#ispromise)
-  - [isRegExp](#isregexp)
-  - [isString](#isstring)
-  - [isSymbol](#issymbol)
-  - [isType](#istype)
-  - [isUndefined](#isundefined)
-  - [validateNestedObject](#validatenestedobject)
+- [Types](#Types)
+  - [ValidationResponse](#ValidationResponse)
+  - [Validator](#Validator)
+- [Functions](#Functions)
+  - [isArray](#isArray)
+  - [isArrayBuffer](#isArrayBuffer)
+  - [isBoolean](#isBoolean)
+  - [isDate](#isDate)
+  - [isError](#isError)
+  - [isFunction](#isFunction)
+  - [isNull](#isNull)
+  - [isNumber](#isNumber)
+  - [isObject](#isObject)
+  - [isPromise](#isPromise)
+  - [isRegExp](#isRegExp)
+  - [isString](#isString)
+  - [isSymbol](#isSymbol)
+  - [isType](#isType)
+  - [isUndefined](#isUndefined)
+  - [validateNestedObject](#validateNestedObject)
 
 
 # Types
@@ -70,6 +71,9 @@ Validator function signature. All validators must implement this function signat
 
 Validates that the passed in value is an Array. 
 
+## isArrayBuffer
+
+Validates if the given value is an array buffer
 
 ## isBoolean
 

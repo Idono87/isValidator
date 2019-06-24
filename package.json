@@ -1,6 +1,6 @@
 {
     "name": "isvalidator",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "The extensible validation package.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -8,7 +8,7 @@
         "pretest": "npm run-script build:dev",
         "test": "tslint --project ./ && npm run-script test:unit && npm run-script test:integration && npm run-script test:coverage",
         "test:lint": "tslint --project ./",
-        "test:integration": "nyc --no-clean --reporter none mocha-parallel-tests --reporter progress \"./build/tests/integration/*.test.js\"",
+        "test:integration": "nyc --no-clean --reporter none mocha-parallel-tests \"./build/tests/integration/*.test.js\"",
         "test:unit": "nyc --no-clean --reporter none mocha-parallel-tests \"./build/tests/unit/*.test.js\"",
         "test:coverage": "nyc --reporter text --reporter html report",
         "prebuild:dev": "rimraf .nyc_output build coverage",
@@ -26,11 +26,16 @@
         "url": "https://github.com/Idono87/isValidator/issues"
     },
     "homepage": "https://github.com/Idono87/isValidator#readme",
-    "dependencies": {},
+    "dependencies": {
+        "@types/lodash.clonedeep": "^4.5.6",
+        "lodash.clonedeep": "^4.5.0"
+    },
     "devDependencies": {
         "@types/chai": "^4.1.7",
         "@types/mocha": "^5.2.6",
         "@types/node": "^11.12.1",
+        "@types/sinon": "^7.0.13",
+        "@types/sinon-chai": "^3.2.2",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
         "mocha": "^6.0.2",
@@ -39,6 +44,8 @@
         "nyc": "^13.3.0",
         "prettier": "^1.16.4",
         "rimraf": "^2.6.3",
+        "sinon": "^7.3.2",
+        "sinon-chai": "^3.3.0",
         "source-map-support": "^0.5.12",
         "tslint": "^5.16.0",
         "tslint-config-prettier": "^1.18.0",
