@@ -283,7 +283,7 @@ export class ValidationObject {
                             this._ValidateAttributes(
                                 propertyKey,
                                 validatorName,
-                                validatorAttributes,
+                                validatorAttributes as IAttributes,
                             );
                         } else {
                             this._ReportError(errorMessage);
