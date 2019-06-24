@@ -1,12 +1,13 @@
 <h1>Usage - Validation</h1>
 
-- [Validating Objects](#validating-objects)
-- [Validate Value](#validate-value)
-- [Validating Nested Objects](#validating-nested-objects)
-- [Validating Constraints](#validating-constraints)
-- [Error Reports](#error-reports)
-- [Strict validation](#strict-validation)
-- [Property Options](#property-options)
+- [Validating Objects](#Validating-Objects)
+- [Validate Value](#Validate-Value)
+- [Validating Nested Objects](#Validating-Nested-Objects)
+- [Validating Constraints](#Validating-Constraints)
+- [Cached Constraints](#Cached-Constraints)
+- [Error Reports](#Error-Reports)
+- [Strict validation](#Strict-validation)
+- [Property Options](#Property-Options)
 
 # Validating Objects
 
@@ -190,6 +191,13 @@ if (typeof result !== 'undefined') {
     //Log errors
 }
 ```
+# Cached Constraints
+
+When validating constraints with the ```ValidateConstraints``` function and the validation passes, the constraints will get cloned and stored in a cache. Passing the original constraints object into ```Validate``` will retrieve the cached constraints and bypass the constraints validation step during validation.
+
+The original constraints object acts as the key for accessing the cache and it does so by the objects reference. Thus any changes made to the original constraints object will not be reflected in the cached constraints. To updated the cached constraints simply call ```ValidateConstraints```with the modified original constraints object. 
+
+To remove a cached constraints object simply remove all references to the original constraints object and the garbage collector will automatically remove the cached constraints.
 
 # Error Reports
 [Validate][validate] and [ValidateValue][validatevalue] both return an [ErrorReport][errorreport] either when constraints validation fails or the object/value validation fails. The error report is a union type of ```undefined | ErrorStructure```. The error structure is a nested object containing reported errors and mirrors a combine structure of the object/value being validated and the constraints object.
