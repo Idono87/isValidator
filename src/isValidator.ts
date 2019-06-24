@@ -20,6 +20,9 @@ import {
     IAttributes,
     IValidatorAttributes,
 } from './attributes/attributes';
+import * as Cache from './cache';
+import ConstraintOptions from './constraintOptions';
+import ConstraintsValidator from './constraintsValidator';
 import { ErrorReport } from './errorHandler';
 import AttributeRegistrationError from './errors/attributeRegistrationError';
 import MissingValidatorReferenceError from './errors/missingValidatorReferenceError';
@@ -46,8 +49,6 @@ import { IStringAttributes } from './attributes/stringAttributes';
 import { ISymbolAttributes } from './attributes/symbolAttributes';
 import { ITypeAttributes } from './attributes/typeAttributes';
 import { IUndefinedAttributes } from './attributes/undefinedAttributes';
-import ConstraintOptions from './constraintOptions';
-import ConstraintsValidator from './constraintsValidator';
 
 /**
  * Interface for building constraints objects.
@@ -575,12 +576,16 @@ export const Validate = (
             options,
         );
 
-        let errorReport: ErrorReport = ConstraintsValidator.validate(
-            constraints,
-        );
+        const cachedConstraints = Cache.get(constraints);
 
-        if (errorReport) {
-            return errorReport;
+        let errorReport: ErrorReport;
+
+        if (typeof cachedConstraints === 'undefined') {
+            errorReport = ConstraintsValidator.validate(constraints);
+
+            if (errorReport) {
+                return errorReport;
+            }
         }
 
         errorReport = ObjectValidator.validate(
@@ -608,7 +613,11 @@ export const ValidateConstraints = (constraints: IConstraints): ErrorReport => {
         throw new err.constructor(err.message, ValidateConstraints);
     }
 
-    return errorReport;
+    if (errorReport) {
+        return errorReport;
+    }
+
+    Cache.cache(constraints);
 };
 
 /**
